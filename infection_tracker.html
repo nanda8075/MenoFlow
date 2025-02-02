@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaginal Discharge Tracker</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        .tracker-container {
+            background: white;
+            padding: 25px;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .input-field {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #e60000;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffcccc;
+            border-radius: 8px;
+            color: #d32f2f;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="tracker-container">
+        <h2>Vaginal Discharge Tracker</h2>
+        
+        <label for="discharge-color">Select Discharge Color:</label>
+        <select id="discharge-color" class="input-field">
+            <option value="">--Choose Color--</option>
+            <option value="creamy">Creamy</option>
+            <option value="watery">Watery</option>
+            <option value="sticky">Sticky</option>
+            <option value="egg-white">Egg White</option>
+            <option value="spotting">Spotting</option>
+            <option value="unusual">Unusual</option>
+            <option value="clumpy-white">Clumpy White</option>
+            <option value="grey">Grey</option>
+        </select>
+        
+        <label for="discharge-texture">Select Discharge Texture:</label>
+        <select id="discharge-texture" class="input-field">
+            <option value="">--Choose Texture--</option>
+            <option value="creamy">Creamy</option>
+            <option value="watery">Watery</option>
+            <option value="sticky">Sticky</option>
+            <option value="egg-white">Egg White</option>
+            <option value="clumpy">Clumpy</option>
+        </select>
+        
+        <label for="discharge-smell">Select Discharge Smell:</label>
+        <select id="discharge-smell" class="input-field">
+            <option value="">--Choose Smell--</option>
+            <option value="fishy-mild">Fishy Mild</option>
+            <option value="no-odor">No Odor</option>
+            <option value="strong-foul-fishy">Strong Foul Fishy</option>
+            <option value="musty-foul">Musty or Foul</option>
+            <option value="rotten-foul">Rotten Foul Smelling</option>
+            <option value="strong-persistent-foul">Strong Persistent Foul Odor</option>
+        </select>
+        
+        <button class="button" onclick="checkInfection()">Check Infection</button>
+        
+        <div class="result-box" id="infection-result">
+            <p id="infection-message"></p>
+        </div>
+    </div>
+
+    <script>
+        function checkInfection() {
+            const color = document.getElementById('discharge-color').value.toLowerCase();
+            const texture = document.getElementById('discharge-texture').value.toLowerCase();
+            const smell = document.getElementById('discharge-smell').value.toLowerCase();
+            
+            let resultMessage = '';
+
+            if (!color || !texture || !smell) {
+                resultMessage = 'Please select all options to check for infection.';
+            } else {
+                // Check for yeast infection
+                if (color === 'creamy' && texture === 'creamy' && smell === 'no-odor') {
+                    resultMessage = 'Possible Yeast Infection: You may be experiencing a yeast infection. Common symptoms include itching and burning. Consult a healthcare provider.';
+                }
+                // Check for bacterial vaginosis
+                else if (color === 'grey' && texture === 'watery' && smell === 'fishy-mild') {
+                    resultMessage = 'Possible Bacterial Vaginosis (BV): You may have BV, which often has a fishy odor. It is important to see a doctor for treatment.';
+                }
+                // Check for trichomoniasis
+                else if (color === 'yellow' && texture === 'frothy' && smell === 'strong-foul-fishy') {
+                    resultMessage = 'Possible Trichomoniasis: This is a sexually transmitted infection (STI) that causes frothy, foul-smelling discharge. Please seek medical advice.';
+                }
+                // Check for cervicitis or STI-related discharge
+                else if (color === 'yellow' && texture === 'clumpy' && smell === 'musty-foul') {
+                    resultMessage = 'Possible Cervicitis or STI: You may have an infection causing abnormal discharge. It is advisable to get a checkup from a healthcare provider.';
+                } 
+                // Other common infections
+                else if (color === 'spotting' || texture === 'clumpy-white') {
+                    resultMessage = 'Spotting or clumpy white discharge may indicate possible issues like hormonal imbalances or early pregnancy symptoms. Consult your healthcare provider.';
+                }
+                else {
+                    resultMessage = 'Your discharge seems normal. Keep monitoring and consult a healthcare provider if any new symptoms appear.';
+                }
+            }
+
+            // Display result
+            document.getElementById('infection-result').style.display = 'block';
+            document.getElementById('infection-message').innerText = resultMessage;
+        }
+    </script>
+</body>
+</html>

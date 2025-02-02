@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menstrual Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffe6e6;
+        }
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 15px;
+            font-size: 26px;
+            font-weight: bold;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        section {
+            background: white;
+            padding: 25px;
+            margin: 15px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        canvas {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        #calendar {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        /* Chatbot styling */
+        .chatbox {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .chatbox input {
+            width: 80%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .chatbox button {
+            width: 15%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .chat-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🌟 Menstrual Tracker
+    </header>
+    <main>
+        <section id="cycle-tracking">
+            <h2>Track Your Cycle</h2>
+            <label for="last-period">Last Period Date:</label>
+            <input type="date" id="last-period">
+            <label for="cycle-length">Cycle Length (days):</label>
+            <input type="number" id="cycle-length" value="28">
+            <button onclick="predictCycle()">Predict Next Cycle</button>
+            <p id="prediction-result"></p>
+        </section>
+        
+        <section id="phase-graph">
+            <h2>Menstrual Phase</h2>
+            <canvas id="phaseChart"></canvas>
+            <div id='calendar'></div>
+            <p id="phase-info"></p>
+        </section>
+        
+        <section id="mood-tracking">
+            <h2>Track Your Mood</h2>
+            <label for="mood">Select Mood:</label>
+            <select id="mood">
+                <option value="happy">😊 Happy</option>
+                <option value="sad">😢 Sad</option>
+                <option value="moody">😠 Moody</option>
+                <option value="anxious">😟 Anxious</option>
+            </select>
+            <button onclick="logMood()">Log Mood</button>
+            <p id="mood-log"></p>
+        </section>
+
+        <section id="partner-alert">
+            <h2>Partner Alert</h2>
+            <p>Notify your partner when you're moody.</p>
+            <button onclick="notifyPartner()">Send Alert</button>
+            <p id="partner-notification"></p>
+        </section>
+    </main>
+
+    <!-- Chatbot Section -->
+    <div class="chatbox" id="chatbox">
+        <div class="chat-content" id="chat-content"></div>
+        <input type="text" id="chat-input" placeholder="Ask me anything...">
+        <button onclick="sendChatMessage()">Send</button>
+    </div>
+
+    <script>
+       //  function sendChatMessage() {
+        //const chatInput = document.getElementById('chat-input').value.trim();
+       // const chatContent = document.getElementById('chat-content');
+
+       // if (!chatInput) return;
+
+        // Display user message
+       // chatContent.innerHTML += `<div><b>You:</b> ${chatInput}</div>`;
+
+        // Rule-based responses
+       // let botResponse = getBotResponse(chatInput.toLowerCase());
+
+        // Display bot response
+        //chatContent.innerHTML += `<div><b>Bot:</b> ${botResponse}</div>`;
+       // document.getElementById('chat-input').value = ''; // Clear input field
+        //chatContent.scrollTop = chatContent.scrollHeight; // Auto-scroll
+    //}
+
+    function sendChatMessage() {
+    const chatInput = document.getElementById('chat-input').value.trim();
+    const chatContent = document.getElementById('chat-content');
+
+    if (!chatInput) return;
+
+    // Display user message
+    chatContent.innerHTML += `<div><b>You:</b> ${chatInput}</div>`;
+
+    // Get bot response
+    let botResponse = getBotResponse(chatInput.toLowerCase());
+
+    // Display bot response
+    setTimeout(() => {
+        chatContent.innerHTML += `<div><b>Bot:</b> ${botResponse}</div>`;
+        chatContent.scrollTop = chatContent.scrollHeight; // Auto-scroll to bottom
+    }, 500);
+
+    document.getElementById('chat-input').value = ''; // Clear input field
+}
+
+
+    //function getBotResponse(input) {
+        //const responses = {
+          //  "hi": "Hello! How can I assist you today?",
+          //  "hello": "Hey there! Need help with something?",
+           // "how are you": "I'm just a bot, but I'm doing great! 😊",
+            //"track period": "You can track your period by entering the last period date above.",
+            //"predict cycle": "Click on 'Predict Next Cycle' to get your next period date.",
+          //  "mood": "You can log your mood in the mood tracking section.",
+            //"partner alert": "I can notify your partner if you’re moody.",
+           // "bye": "Goodbye! Take care. ❤️",
+       // };
+
+        // Default response if input is not found
+       // return responses[input] || "I'm not sure about that. Try asking something else!";
+    //}
+
+    function getBotResponse(input) {
+    const responses = {
+        "hi": "Hello! How can I assist you today?",
+        "hello": "Hey there! Need help with something?",
+        "how are you": "I'm just a bot, but I'm doing great! 😊",
+        "predict cycle": "Click on 'Predict Next Cycle' to get your next period date.",
+        "mood": "You can log your mood in the mood tracking section.",
+        "partner alert": "I can notify your partner if you’re moody.",
+        "bye": "Goodbye! Take care. ❤️",
+    };
+
+    if (input === "track period") {
+        predictCycle(); // Call the function when "track period" is entered
+        return "I have predicted your next cycle. Check the result above! 📅";
+    }
+
+    return responses[input] || "I'm not sure about that. Try asking something else!";
+}
+
+        // Period tracking functions (already in your code)
+        function predictCycle() {
+            let lastPeriod = document.getElementById("last-period").value;
+            let cycleLength = document.getElementById("cycle-length").value || 28;
+            if (lastPeriod) {
+                let nextPeriodDate = new Date(lastPeriod);
+                nextPeriodDate.setDate(nextPeriodDate.getDate() + parseInt(cycleLength));
+                document.getElementById("prediction-result").innerText = "Next period is predicted on: " + nextPeriodDate.toDateString();
+                updatePhaseGraph(lastPeriod, cycleLength);
+                updateCalendar(lastPeriod, cycleLength);
+            } else {
+                document.getElementById("prediction-result").innerText = "Please enter your last period date.";
+            }
+        }
+
+        function updatePhaseGraph(lastPeriod, cycleLength) {
+            let today = new Date();
+            let periodStart = new Date(lastPeriod);
+            let daysElapsed = Math.floor((today - periodStart) / (1000 * 60 * 60 * 24));
+            let phase = "Unknown";
+            let phaseInfo = "";
+
+            if (daysElapsed >= 0 && daysElapsed <= 5) {
+                phase = "Menstrual Phase";
+                phaseInfo = "Low estrogen and progesterone levels. Possible fatigue and mood swings.";
+            } else if (daysElapsed > 5 && daysElapsed <= 13) {
+                phase = "Follicular Phase";
+                phaseInfo = "FSH hormone active, rising estrogen. Increased energy, clear skin, and mood stability.";
+            } else if (daysElapsed >= 14 && daysElapsed <= 16) {
+                phase = "Ovulatory Phase";
+                phaseInfo = "LH surge, highest chance of pregnancy.";
+            } else if (daysElapsed > 16 && daysElapsed <= cycleLength) {
+                phase = "Luteal Phase";
+                phaseInfo = "Progesterone rises, preparing for pregnancy or next cycle. Symptoms: headache, bloating, mood swings.";
+            }
+
+            document.getElementById("phase-info").innerText = `Current Phase: ${phase} - ${phaseInfo}`;
+            renderChart(phase);
+        }
+
+        function renderChart(phase) {
+            let ctx = document.getElementById('phaseChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Menstrual', 'Follicular', 'Ovulatory', 'Luteal'],
+                    datasets: [{
+                        data: [5, 9, 2, 12],
+                        backgroundColor: ['#ff4d4d', '#ffb84d', '#4d79ff', '#ff99cc'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+   ///function updateCalendar(lastPeriod, cycleLength) {
+          //  let calendarEl = document.getElementById('calendar');
+          ///  let calendar = new FullCalendar.Calendar(calendarEl, { initialView: 'dayGridMonth' });
+         //   calendar.render();
+      //  }----!>
+        
+      function updateCalendar(lastPeriod, cycleLength) {
+    let calendarEl = document.getElementById('calendar');
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: [
+            {
+                title: 'Last Period',
+                start: lastPeriod,
+                color: '#ff4d4d'
+            },
+            {
+                title: 'Next Period',
+                start: new Date(new Date(lastPeriod).setDate(new Date(lastPeriod).getDate() + parseInt(cycleLength))),
+                color: '#ff99cc'
+            }
+        ]
+    });
+    calendar.render();
+}
+
+
+
+        function notifyPartner() {
+            let mood = document.getElementById("mood").value;
+            if (mood === "moody") {
+                document.getElementById("partner-notification").innerText = "Partner notified: You might need extra care today.";
+            } else {
+                document.getElementById("partner-notification").innerText = "No alert sent.";
+            }
+        }
+    </script>
+</body>
+</html>

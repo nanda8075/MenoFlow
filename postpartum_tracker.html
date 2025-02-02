@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postpartum Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tracker-container {
+            background: white;
+            padding: 30px;
+            margin-top: 30px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .input-field {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .button {
+            background-color: #ff6f61;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #e65c4b;
+        }
+        .tracker-section {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tracker-container">
+        <!-- Donut Chart Display (Centered) -->
+        <div class="chart-container">
+            <canvas id="postpartum-chart"></canvas>
+        </div>
+
+        <h2>Postpartum Tracker</h2>
+
+        <!-- Sleep Tracker -->
+        <div class="tracker-section">
+            <label for="sleep-hours">Enter Sleep Hours:</label>
+            <input type="number" id="sleep-hours" class="input-field" placeholder="Enter hours slept">
+            <button class="button" onclick="logSleep()">Log Sleep</button>
+        </div>
+
+        <!-- Lactation Tracker -->
+        <div class="tracker-section">
+            <label for="breastfeeding-time">Enter Breastfeeding Duration (minutes):</label>
+            <input type="number" id="breastfeeding-time" class="input-field" placeholder="Enter minutes">
+            <button class="button" onclick="logBreastfeeding()">Log Breastfeeding</button>
+        </div>
+
+        <!-- Mood Tracker -->
+        <div class="tracker-section">
+            <label for="mood-status">How Are You Feeling Today?</label>
+            <select id="mood-status" class="input-field">
+                <option value="">--Select Mood--</option>
+                <option value="happy">Happy</option>
+                <option value="sad">Sad</option>
+                <option value="stressed">Stressed</option>
+                <option value="relaxed">Relaxed</option>
+            </select>
+            <button class="button" onclick="logMood()">Log Mood</button>
+        </div>
+
+        <!-- Food Tracker -->
+        <div class="tracker-section">
+            <label for="meal-log">Enter Your Meals (Breakfast, Lunch, Dinner):</label>
+            <input type="text" id="meal-log" class="input-field" placeholder="Enter your meals">
+            <button class="button" onclick="logFood()">Log Food</button>
+        </div>
+
+        <!-- Exercise Tracker -->
+        <div class="tracker-section">
+            <label for="exercise-duration">Enter Exercise Duration (minutes):</label>
+            <input type="number" id="exercise-duration" class="input-field" placeholder="Enter exercise duration">
+            <button class="button" onclick="logExercise()">Log Exercise</button>
+        </div>
+
+    </div>
+
+    <script>
+        var chartData = {
+            sleep: 0,
+            breastfeeding: 0,
+            mood: 0,
+            food: 0,
+            exercise: 0
+        };
+
+        var ctx = document.getElementById('postpartum-chart').getContext('2d');
+        var postpartumChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sleep', 'Breastfeeding', 'Mood', 'Food', 'Exercise'],
+                datasets: [{
+                    label: 'Postpartum Tracker',
+                    data: [chartData.sleep, chartData.breastfeeding, chartData.mood, chartData.food, chartData.exercise],
+                    backgroundColor: ['#FF6F61', '#4E79A7', '#F39C12', '#1ABC9C', '#9B59B6'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        function logSleep() {
+            const sleepHours = document.getElementById('sleep-hours').value;
+            if (sleepHours) {
+                chartData.sleep = sleepHours;
+                updateChart();
+            } else {
+                alert("Please enter your sleep hours.");
+            }
+        }
+
+        function logBreastfeeding() {
+            const breastfeedingTime = document.getElementById('breastfeeding-time').value;
+            if (breastfeedingTime) {
+                chartData.breastfeeding = breastfeedingTime;
+                updateChart();
+            } else {
+                alert("Please enter your breastfeeding time.");
+            }
+        }
+
+        function logMood() {
+            const moodStatus = document.getElementById('mood-status').value;
+            if (moodStatus) {
+                chartData.mood = moodStatus === "happy" ? 100 : (moodStatus === "sad" ? 50 : 75);
+                updateChart();
+            } else {
+                alert("Please select your mood.");
+            }
+        }
+
+        function logFood() {
+            const mealLog = document.getElementById('meal-log').value;
+            if (mealLog) {
+                chartData.food = mealLog ? 100 : 0;
+                updateChart();
+            } else {
+                alert("Please enter your meal details.");
+            }
+        }
+
+        function logExercise() {
+            const exerciseDuration = document.getElementById('exercise-duration').value;
+            if (exerciseDuration) {
+                chartData.exercise = exerciseDuration;
+                updateChart();
+            } else {
+                alert("Please enter your exercise duration.");
+            }
+        }
+
+        function updateChart() {
+            postpartumChart.data.datasets[0].data = [
+                chartData.sleep,
+                chartData.breastfeeding,
+                chartData.mood,
+                chartData.food,
+                chartData.exercise
+            ];
+            postpartumChart.update();
+        }
+    </script>
+
+</body>
+</html>

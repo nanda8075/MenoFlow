@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menstrual Tracker - Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #f5e1e1;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 15px;
+            font-size: 26px;
+            font-weight: bold;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .button-container button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #e43f3f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🌟 Menstrual Tracker
+    </header>
+    <main>
+        <h2>Welcome to the Menstrual Tracker</h2>
+        <p>Select a feature to explore:</p>
+
+        <div class="button-container">
+            <button onclick="window.location.href='mentor_support.html'">Mentor Support</button>
+            <button onclick="window.location.href='cycle_calculator.html'">Menstrual Cycle Calculator</button>
+            <button onclick="window.location.href='activity_graph.html'">Activity Survey Graph</button>
+            <button onclick="window.location.href='Infection_tracker.html'">Vaginal Infection Tracker</button>
+            <!-- Pregnancy Tracker Button (only visible if pregnant) -->
+            <button id="pregnancyTrackerBtn" style="display: none;" onclick="window.location.href='pregnancy_tracker.html'">Pregnancy Tracker</button>
+            <button id="postpartumTrackerBtn" style="display: none;" onclick="window.location.href='postpartum_tracker.html'">PostPartum Tracker</button>
+        </div>
+    </main>
+
+    <script>
+        // Check if the user is pregnant and show the Pregnancy Tracker button if true
+        const pregnantStatus = localStorage.getItem('pregnantStatus');
+        if (pregnantStatus === "Yes") {
+            document.getElementById('pregnancyTrackerBtn').style.display = 'block';
+        }
+        const postpartumStatus = localStorage.getItem('postpartumStatus');
+        if (postpartumStatus === "Yes") {
+            document.getElementById('postpartumtrackerBtn').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

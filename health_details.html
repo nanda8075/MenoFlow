@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Details - Menstrual Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffe6e6;
+        }
+        .health-container {
+            background: white;
+            padding: 25px;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .health-container h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            display: block;
+            margin: 10px 0;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+<body>
+    <div class="health-container">
+        <h2>Provide Your Health Details</h2>
+        <form id="health-details-form">
+            <label>Do you have PCOD or PCOS?</label>
+            <input type="radio" name="health" value="PCOD" id="pcod"> PCOD
+            <input type="radio" name="health" value="PCOS" id="pcos"> PCOS
+            <input type="radio" name="health" value="None" id="none" checked> None
+
+            <label>Are you pregnant?</label>
+            <input type="radio" name="pregnancy" value="Yes" id="pregnant"> Yes
+            <input type="radio" name="pregnancy" value="No" id="not-pregnant" checked> No
+
+            <label>Do you wish to be pregnant in the future?</label>
+            <input type="radio" name="wish-pregnant" value="Yes" id="wish-pregnant-yes"> Yes
+            <input type="radio" name="wish-pregnant" value="No" id="wish-pregnant-no" checked> No
+
+            <label>Are you postpartum?</label>
+            <input type="radio" name="postpartum" value="Yes" id="postpartum-yes"> Yes
+            <input type="radio" name="postpartum" value="No" id="postpartum-no" checked> No
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('health-details-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const healthStatus = document.querySelector('input[name="health"]:checked').value;
+            const pregnantStatus = document.querySelector('input[name="pregnancy"]:checked').value;
+            const wishPregnant = document.querySelector('input[name="wish-pregnant"]:checked').value;
+            const postpartumStatus = document.querySelector('input[name="postpartum"]:checked').value;
+
+            localStorage.setItem('healthStatus', healthStatus);
+            localStorage.setItem('pregnantStatus', pregnantStatus);
+            localStorage.setItem('wishPregnant', wishPregnant);
+            localStorage.setItem('postpartumStatus', postpartumStatus);
+
+            // Redirect to the next page (or home page)
+            window.location.href = 'index.html'; // Replace with the actual next page
+        });
+    </script>
+</body>
+</html>

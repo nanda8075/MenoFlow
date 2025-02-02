@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Support - Menstrual Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffe6e6;
+        }
+        .support-container {
+            background: white;
+            padding: 25px;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .support-container h2 {
+            margin-bottom: 20px;
+        }
+        .support-container p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .recommendations {
+            text-align: left;
+            margin-top: 30px;
+        }
+        .button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #e60000;
+        }
+        .progress-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .input-field {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .message-container {
+            margin-top: 20px;
+        }
+        .message-box {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="support-container">
+        <h2>Mentor Support</h2>
+        <p><strong>Username:</strong> <span id="username"></span></p>
+        <p><strong>PCOD/PCOS Status:</strong> <span id="health-status"></span></p>
+        <p><strong>Pregnancy Status:</strong> <span id="pregnancy-status"></span></p>
+        <p><strong>Wants to Be Pregnant:</strong> <span id="wish-pregnant"></span></p>
+        <p><strong>Postpartum Status:</strong> <span id="postpartum-status"></span></p>
+
+        <div class="recommendations" id="recommendations">
+            <!-- Recommendations will be displayed here -->
+        </div>
+
+        <!-- Progress Tracker Section -->
+        <div class="progress-container">
+            <h3>Track User Progress</h3>
+            <label for="progress-update">Update Health Status:</label>
+            <textarea id="progress-update" class="input-field" placeholder="Add any health progress or changes..." rows="4"></textarea><br>
+            <button class="button" id="update-progress">Update Progress</button>
+        </div>
+
+        <!-- Mentor Message Section -->
+        <div class="message-container">
+            <h3>Send Message to User</h3>
+            <textarea id="message-box" class="message-box" placeholder="Write a message to the user"></textarea><br>
+            <button class="button" id="send-message">Send Message</button>
+        </div>
+
+        <button class="button" id="send-support">Send Support Message</button>
+    </div>
+
+    <script>
+        // Get stored data from localStorage
+        const username = localStorage.getItem('username');
+        const healthStatus = localStorage.getItem('healthStatus');
+        const pregnancyStatus = localStorage.getItem('pregnantStatus');
+        const wishPregnant = localStorage.getItem('wishPregnant');
+        const postpartumStatus = localStorage.getItem('postpartumStatus');
+
+        // Display data on the page
+        document.getElementById('username').textContent = username || 'N/A';
+        document.getElementById('health-status').textContent = healthStatus || 'Not specified';
+        document.getElementById('pregnancy-status').textContent = pregnancyStatus || 'Not specified';
+        document.getElementById('wish-pregnant').textContent = wishPregnant || 'Not specified';
+        document.getElementById('postpartum-status').textContent = postpartumStatus || 'Not specified';
+
+        // Generate personalized recommendations based on the health details
+        function generateRecommendations() {
+            let recommendations = '';
+
+            if (healthStatus === 'PCOD' || healthStatus === 'PCOS') {
+                recommendations += '<h3>Exercise Recommendations (PCOD/PCOS)</h3>';
+                recommendations += '<ul><li>Cardio exercises like walking, jogging, and cycling.</li>';
+                recommendations += '<li>Strength training exercises to improve insulin resistance.</li>';
+                recommendations += '<li>Low-impact activities like swimming or yoga.</li></ul>';
+                
+                recommendations += '<h3>Yoga Recommendations</h3>';
+                recommendations += '<ul><li>Supta Baddha Konasana (Reclining Bound Angle Pose)</li>';
+                recommendations += '<li>Setu Bandhasana (Bridge Pose)</li>';
+                recommendations += '<li>Dhanurasana (Bow Pose)</li></ul>';
+                
+                recommendations += '<h3>Diet Recommendations</h3>';
+                recommendations += '<ul><li>Low Glycemic Index (GI) foods like whole grains, vegetables, legumes, and nuts.</li>';
+                recommendations += '<li>Lean proteins: chicken, tofu, legumes.</li>';
+                recommendations += '<li>Healthy fats like omega-3 fatty acids (flaxseeds, walnuts, fish).</li>';
+                recommendations += '<li>High-fiber foods: vegetables, fruits, and whole grains.</li></ul>';
+            }
+
+            if (pregnancyStatus === 'Yes') {
+                recommendations += '<h3>Exercise Recommendations (Pregnancy)</h3>';
+                recommendations += '<ul><li>Walking for low-impact exercise.</li>';
+                recommendations += '<li>Swimming for joint support and relaxation.</li>';
+                recommendations += '<li>Prenatal Pilates to strengthen muscles without straining the body.</li></ul>';
+
+                recommendations += '<h3>Yoga Recommendations</h3>';
+                recommendations += '<ul><li>Baddha Konasana (Bound Angle Pose)</li>';
+                recommendations += '<li>Cat-Cow Stretch</li>';
+                recommendations += '<li>Child’s Pose for relaxation and lower back relief.</li></ul>';
+                
+                recommendations += '<h3>Diet Recommendations</h3>';
+                recommendations += '<ul><li>Folic Acid: leafy greens, fortified cereals, citrus fruits.</li>';
+                recommendations += '<li>Protein: chicken, beans, eggs, legumes.</li>';
+                recommendations += '<li>Iron-rich foods: red meat, spinach, lentils, beans.</li>';
+                recommendations += '<li>Calcium-rich foods: dairy, leafy greens, fortified plant milk.</li></ul>';
+            }
+
+            if (postpartumStatus === 'Yes') {
+                recommendations += '<h3>Exercise Recommendations (Postpartum)</h3>';
+                recommendations += '<ul><li>Walking to improve circulation and stamina.</li>';
+                recommendations += '<li>Pelvic floor exercises like Kegels.</li>';
+                recommendations += '<li>Core strengthening exercises to rebuild abdominal strength.</li></ul>';
+
+                recommendations += '<h3>Yoga Recommendations</h3>';
+                recommendations += '<ul><li>Supta Baddha Konasana for relaxation.</li>';
+                recommendations += '<li>Downward Dog for strength and flexibility.</li>';
+                recommendations += '<li>Warrior II for strength and balance.</li></ul>';
+
+                recommendations += '<h3>Diet Recommendations</h3>';
+                recommendations += '<ul><li>High-protein foods like chicken, beans, and eggs for recovery.</li>';
+                recommendations += '<li>Fiber-rich foods for digestion and to prevent constipation.</li>';
+                recommendations += '<li>Healthy fats for energy and lactation support.</li>';
+                recommendations += '<li>Iron-rich foods to replenish iron after childbirth.</li></ul>';
+            }
+
+            // Display the recommendations on the page
+            document.getElementById('recommendations').innerHTML = recommendations;
+        }
+
+        // Call the function to generate recommendations based on health status
+        generateRecommendations();
+
+        // Handle mentor's message click event
+        document.getElementById('send-message').addEventListener('click', function() {
+            const message = document.getElementById('message-box').value;
+            if (message) {
+                alert('Message sent to the user: ' + message);
+                // Optionally, store this message in localStorage or database for record-keeping
+                document.getElementById('message-box').value = ''; // Clear message field
+            } else {
+                alert('Please enter a message before sending.');
+            }
+        });
+
+        // Handle progress update click event
+        document.getElementById('update-progress').addEventListener('click', function() {
+            const progress = document.getElementById('progress-update').value;
+            if (progress) {
+                alert('Progress updated: ' + progress);
+                // Optionally, save this progress update in localStorage or a database
+                document.getElementById('progress-update').value = ''; // Clear progress field
+            } else {
+                alert('Please add a progress update.');
+            }
+        });
+
+        // Handle support message click event
+        document.getElementById('send-support').addEventListener('click', function() {
+            alert('Support message sent.');
+            // Further functionality can be added to send personalized support
+        });
+    </script>
+</body>
+</html>

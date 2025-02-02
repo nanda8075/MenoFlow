@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #ffe6e6;
+        }
+        .tracker-container {
+            background: white;
+            padding: 25px;
+            margin: 50px auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .input-field {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #e60000;
+        }
+        .progress-container {
+            width: 100%;
+            height: 30px;
+            background-color: #f3f3f3;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #ff4d4d;
+            width: 0%;
+            border-radius: 15px;
+        }
+        .alert-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffcccc;
+            border-radius: 8px;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="tracker-container">
+        <h2>Pregnancy Tracker</h2>
+
+        <!-- Input fields for last period and pregnancy confirmation dates -->
+        <label for="last-period">Enter Last Period Date:</label>
+        <input type="date" id="last-period" class="input-field">
+        
+        <label for="pregnancy-confirmation">Enter Pregnancy Confirmation Date:</label>
+        <input type="date" id="pregnancy-confirmation" class="input-field">
+
+        <!-- Input field for husband's email -->
+        <label for="husband-email">Enter Husband's Email:</label>
+        <input type="email" id="husband-email" class="input-field">
+
+        <button class="button" onclick="calculateDueDate()">Calculate Due Date</button>
+        <p><strong>Estimated Due Date:</strong> <span id="due-date"></span></p>
+
+        <h3>Checkup Reminders</h3>
+        <p>Next checkup: <span id="next-checkup"></span></p>
+        
+        <h3>Personalized Tips</h3>
+        <p id="pregnancy-tips"></p>
+        
+        <h3>Baby Growth Milestone</h3>
+        <p id="baby-growth"></p>
+        
+        <h3>Labor Information</h3>
+        <p id="labor-info"></p>
+
+        <h3>Pregnancy Progress</h3>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <!-- Husband's Alert Box -->
+        <div class="alert-box" id="husband-alert" style="display: none;"></div>
+    </div>
+
+    <script>
+        function calculateDueDate() {
+            const lastPeriod = document.getElementById('last-period').value;
+            const pregnancyConfirmation = document.getElementById('pregnancy-confirmation').value;
+            const husbandEmail = document.getElementById('husband-email').value;
+
+            if (lastPeriod && pregnancyConfirmation && husbandEmail) {
+                let lastDate = new Date(lastPeriod);
+                lastDate.setDate(lastDate.getDate() + 280); // 40 weeks (due date)
+                document.getElementById('due-date').innerText = lastDate.toDateString();
+                localStorage.setItem('dueDate', lastDate.toDateString());
+
+                const pregnancyConfirmedDate = new Date(pregnancyConfirmation);
+                const daysPregnant = Math.floor((new Date() - pregnancyConfirmedDate) / (1000 * 60 * 60 * 24)); // Days since pregnancy confirmation
+
+                localStorage.setItem('daysPregnant', daysPregnant); // Save days pregnant for future calculations
+                updatePregnancyInfo(daysPregnant, husbandEmail);
+            } else {
+                alert('Please enter your last period, pregnancy confirmation date, and husband\'s email.');
+            }
+        }
+
+        function updatePregnancyInfo(daysPregnant, husbandEmail) {
+            const dueDate = new Date(localStorage.getItem('dueDate'));
+            const totalPregnancyDays = 280; // Approx. 40 weeks = 280 days
+            const progressPercentage = (daysPregnant / totalPregnancyDays) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+
+            // Next checkup based on pregnancy week
+            let checkupWeek = Math.ceil(daysPregnant / 7 / 4) * 4;
+            document.getElementById('next-checkup').innerText = `Week ${checkupWeek}`;
+
+            // Personalized tips based on the number of days pregnant
+            let trimesterTips = "";
+            if (daysPregnant <= 84) {
+                trimesterTips = "First Trimester: Focus on maintaining a healthy diet with folic acid, iron, and protein-rich foods. Stay hydrated and rest when needed.";
+            } else if (daysPregnant <= 196) {
+                trimesterTips = "Second Trimester: Continue to eat nutrient-rich foods and start incorporating gentle exercises like walking or prenatal yoga.";
+            } else {
+                trimesterTips = "Third Trimester: Prepare for delivery by attending prenatal classes, organizing your hospital bag, and ensuring you get enough rest.";
+            }
+            document.getElementById('pregnancy-tips').innerText = trimesterTips;
+
+            // Baby growth milestones by number of days pregnant
+            let babyGrowthMilestones = [
+                "Days 1-28: Your baby is a tiny blastocyst and implanting in your uterus.",
+                "Days 29-56: Baby's heart is now beating, and they begin forming a spinal cord.",
+                "Days 57-84: Baby starts to look like a human with limbs and facial features.",
+                "Days 85-112: Baby’s facial features become more defined, and they start moving.",
+                "Days 113-140: Your baby is growing rapidly, and you may start feeling movements.",
+                "Days 141-168: Baby's eyes can open, and they begin responding to light.",
+                "Days 169-196: Baby’s lungs are developing, and they can now hear sounds.",
+                "Days 197-224: Your baby is gaining weight rapidly and storing fat.",
+                "Days 225-252: Baby is fully formed and getting ready for birth.",
+                "Days 253-280: Baby is fully mature and ready to be born."
+            ];
+
+            document.getElementById('baby-growth').innerText = babyGrowthMilestones[Math.floor(daysPregnant / 28)] || "You're in the final days! Baby is ready to meet you!";
+
+            // Labor information
+            document.getElementById('labor-info').innerText = "Watch for contractions, water breaking, and hospital preps.";
+
+            // Husband's alert based on pregnancy progress
+            let alertMessage = '';
+            if (daysPregnant > 196 && daysPregnant < 224) {
+                alertMessage = `Dear Husband, it's getting closer! Your partner is in the final stages of pregnancy. Please make sure you’re prepared for the baby’s arrival.`;
+            } else if (daysPregnant <= 84) {
+                alertMessage = `Dear Husband, your partner is in the first trimester! Make sure she’s taking it easy and staying hydrated.`;
+            } else {
+                alertMessage = `Dear Husband, take care of your partner as she’s entering the second or third trimester! Support her through this journey.`;
+            }
+
+            // Display the husband's alert
+            const alertBox = document.getElementById('husband-alert');
+            alertBox.innerText = alertMessage;
+            alertBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

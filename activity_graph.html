@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        canvas {
+            max-width: 100%;
+        }
+        .input-section {
+            margin-top: 20px;
+        }
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Monthly Monitoring Dashboard</h2>
+        <canvas id="activityChart"></canvas>
+        
+        <div class="input-section">
+            <h3>Log Your Data</h3>
+            <label for="day">Day of Cycle:</label>
+            <input type="number" id="day" min="1" max="30">
+            
+            <label for="flow">Menstrual Flow:</label>
+            <select id="flow">
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+            </select>
+
+            <label for="exercise">Exercise (minutes):</label>
+            <input type="number" id="exercise" min="0">
+
+            <label for="water">Water Intake (liters):</label>
+            <input type="number" id="water" min="0" step="0.1">
+
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" min="30">
+
+            <label for="hormonal">Hormonal Changes (1-5):</label>
+            <input type="number" id="hormonal" min="1" max="5">
+
+            <button onclick="updateChart()">Update Data</button>
+        </div>
+    </div>
+
+    <script>
+        let ctx = document.getElementById('activityChart').getContext('2d');
+        let chartData = {
+            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4'],
+            datasets: [
+                { label: 'Flow', data: [2, 3, 1, 2], borderColor: 'red', fill: false },
+                { label: 'Exercise (min)', data: [30, 40, 50, 35], borderColor: 'blue', fill: false },
+                { label: 'Water Intake (L)', data: [2.5, 2.8, 3.0, 2.6], borderColor: 'green', fill: false },
+                { label: 'Weight (kg)', data: [60, 61, 60.5, 60.8], borderColor: 'purple', fill: false },
+                { label: 'Hormonal Changes', data: [3, 4, 5, 3], borderColor: 'orange', fill: false }
+            ]
+        };
+        
+        let activityChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: { responsive: true }
+        });
+
+        function updateChart() {
+            let newDay = document.getElementById('day').value || chartData.labels.length + 1;
+            let newFlow = document.getElementById('flow').value || 2;
+            let newExercise = document.getElementById('exercise').value || 30;
+            let newWater = document.getElementById('water').value || 2.5;
+            let newWeight = document.getElementById('weight').value || 60;
+            let newHormonal = document.getElementById('hormonal').value || 3;
+
+            chartData.labels.push('Day ' + newDay);
+            chartData.datasets[0].data.push(parseInt(newFlow));
+            chartData.datasets[1].data.push(newExercise);
+            chartData.datasets[2].data.push(newWater);
+            chartData.datasets[3].data.push(newWeight);
+            chartData.datasets[4].data.push(newHormonal);
+
+            activityChart.update();
+        }
+    </script>
+</body>
+</html>
